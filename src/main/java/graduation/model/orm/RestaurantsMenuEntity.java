@@ -1,7 +1,10 @@
 package graduation.model.orm;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import graduation.model.item.RestaurantMenuItem;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -9,36 +12,38 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "restaurants_menu")
+@NoArgsConstructor
+@AllArgsConstructor
 public class RestaurantsMenuEntity extends AbstractBaseEntity {
     @Column(name = "item_name")
     @NotNull
     @NotEmpty
-    private String ItemName;
+    @Getter
+    @Setter
+    private String itemName;
 
     @Column(name = "item_price")
     @NotNull
     @NotEmpty
+    @Getter
+    @Setter
     private Double itemPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
+    @Getter
+    @Setter
     private RestaurantsEntity restaurantsEntity;
-    public RestaurantsMenuEntity() {
+
+    public static RestaurantsMenuEntity of(RestaurantMenuItem restaurantMenuItem, RestaurantsEntity restaurantsEntity) {
+        return new RestaurantsMenuEntity(restaurantMenuItem.getName(), restaurantMenuItem.getPrice(), restaurantsEntity);
     }
 
-    public String getItemName() {
-        return ItemName;
-    }
-
-    public void setItemName(String itemName) {
-        ItemName = itemName;
-    }
-
-    public Double getItemPrice() {
-        return itemPrice;
-    }
-
-    public void setItemPrice(Double itemPrice) {
-        this.itemPrice = itemPrice;
+    public RestaurantsMenuEntity update(RestaurantMenuItem restaurantMenuItem) {
+        String name = restaurantMenuItem.getName();
+        double price = restaurantMenuItem.getPrice();
+        this.itemName = name == null ? this.itemName : name;
+        this.itemPrice = price == 0 ? this.itemPrice : price;
+        return this;
     }
 }

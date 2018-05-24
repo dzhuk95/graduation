@@ -21,7 +21,7 @@ public class UserVotesEntity extends AbstractBaseEntity {
     private RestaurantsEntity restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "user_id")
     @Fetch(FetchMode.JOIN)
     private UserEntity user;
 
