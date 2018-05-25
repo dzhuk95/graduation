@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "restaurants_menu")
@@ -27,7 +28,7 @@ public class RestaurantsMenuEntity extends AbstractBaseEntity {
     @NotEmpty
     @Getter
     @Setter
-    private Double itemPrice;
+    private BigDecimal itemPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
@@ -36,14 +37,14 @@ public class RestaurantsMenuEntity extends AbstractBaseEntity {
     private RestaurantsEntity restaurantsEntity;
 
     public static RestaurantsMenuEntity of(RestaurantMenuItem restaurantMenuItem, RestaurantsEntity restaurantsEntity) {
-        return new RestaurantsMenuEntity(restaurantMenuItem.getName(), restaurantMenuItem.getPrice(), restaurantsEntity);
+        return new RestaurantsMenuEntity(restaurantMenuItem.getName(), BigDecimal.valueOf(restaurantMenuItem.getPrice()), restaurantsEntity);
     }
 
     public RestaurantsMenuEntity update(RestaurantMenuItem restaurantMenuItem) {
         String name = restaurantMenuItem.getName();
         double price = restaurantMenuItem.getPrice();
         this.itemName = name == null ? this.itemName : name;
-        this.itemPrice = price == 0 ? this.itemPrice : price;
+        this.itemPrice = price == 0 ? this.itemPrice : BigDecimal.valueOf(price);
         return this;
     }
 }

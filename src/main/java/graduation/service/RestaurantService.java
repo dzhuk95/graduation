@@ -59,4 +59,9 @@ public class RestaurantService {
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity deleteRestaurantMenu(List<Integer> ids) {
+        restaurantsMenuRepository.deleteAllByIdInList(ids);
+        return ResponseEntity.ok().build();
+    }
+
 }
