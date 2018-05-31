@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,15 +48,20 @@ public class RestaurantService {
 
     @Transactional
     @Modifying
-    //Todo
     public ResponseEntity updateMenu(List<RestaurantMenuItem> menu) {
-        List<RestaurantsMenuEntity> collect = menu.stream().map(item -> {
-            Optional<RestaurantsMenuEntity> one = restaurantsMenuRepository.findById(item.getId());
-            if (one.isPresent())
-                return one.get().update(item);
-            else return null;
-        }).collect(Collectors.toList());
-        restaurantsMenuRepository.saveAll(collect);
+        Assert.notNull(menu,"Update items must not be null");
+        menu.sort(Comparator.comparingInt(RestaurantMenuItem::getId));
+        List<RestaurantsMenuEntity> allById =
+                restaurantsMenuRepository.findAllById(menu.stream().map(RestaurantMenuItem::getId).collect(Collectors.toList()));
+
+        if (menu.size() != allById.size())
+            throw new IllegalArgumentException("Some of provided elements are doesn't exist");
+
+        for (int i = 0; i < allById.size(); i++) {
+            RestaurantsMenuEntity restaurantsMenuEntity = allById.get(i);
+            restaurantsMenuEntity.update(menu.get(i));
+        }
+        restaurantsMenuRepository.saveAll(allById);
         return ResponseEntity.ok().build();
     }
 

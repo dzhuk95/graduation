@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface UserVotesRepository extends JpaRepository<UserVotesEntity, Integer> {
 
-    @Query("SELECT uve FROM UserVotesEntity as uve WHERE uve.user.id=:userId and uve.localDateTime<:currentDate")
-    List<UserVotesEntity> getByUserIdAndCurrentTime(@Param("userId") int userId, @Param("time")LocalDateTime currentDate, Pageable pageable);
+    @Query("SELECT uve FROM UserVotesEntity as uve WHERE uve.user.id=:userId and uve.localDateTime BETWEEN :startDate AND :endDate ")
+     UserVotesEntity getByUserIdAndCurrentTime(@Param("userId") int userId, @Param("startDate") LocalDateTime startDate,
+                                                    @Param("endDate") LocalDateTime endDate, Pageable pageable);
 }

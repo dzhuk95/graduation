@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
+// TODO: 31.05.2018 add more handlers
 public class GlobalAdviser {
 
     @ExceptionHandler(value = Exception.class)
