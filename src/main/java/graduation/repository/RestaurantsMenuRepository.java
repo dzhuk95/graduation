@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface RestaurantsMenuRepository extends JpaRepository<RestaurantsMenuEntity, Integer> {
-    @Transactional
+
     void deleteAllByIdInList(List<Integer> list);
 
     @Query("SELECT rme FROM RestaurantsMenuEntity rme WHERE rme.id in :ids ORDER BY rme.id ASC ")

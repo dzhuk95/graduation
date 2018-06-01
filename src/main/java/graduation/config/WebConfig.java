@@ -1,27 +1,39 @@
 package graduation.config;
 
+import graduation.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//@EnableWebSecurity
+@EnableWebSecurity
 public class WebConfig extends WebSecurityConfigurerAdapter {
-/*    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/signUp", "/api/registration").permitAll()
-                .anyRequest().authenticated()
-//                .and()
-//                .formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password")
-//                .loginProcessingUrl("/spring_security_check")
-//                .defaultSuccessUrl("/project", true)
-//                .permitAll()
-                .and()
-                .logout().logoutUrl("/logout").permitAll()
-                .and()
-                .addFilterAfter(new WebFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.csrf().disable().headers().frameOptions().disable().and().rememberMe();
+
+    @Autowired
+    private UserService userService;
+
+    @Bean
+    UserDetailsService authenticationProvider() {
+        return userService;
     }
 
-    */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.userDetailsService(authenticationProvider()).authorizeRequests().antMatchers("/api/registration").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().loginPage("/").loginProcessingUrl("/auth").usernameParameter("username")
+                .and()
+                .logout().logoutUrl("logout")
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .csrf().disable().headers().frameOptions().disable().and().rememberMe();
+    }
+
 }

@@ -1,34 +1,23 @@
 package graduation.service;
 
-import graduation.model.AuthorizedUser;
-import graduation.model.item.UserVoteReq;
+import graduation.model.api.UserVoteReq;
 import graduation.model.orm.RestaurantsEntity;
 import graduation.model.orm.UserEntity;
 import graduation.model.orm.UserVotesEntity;
 import graduation.repository.RestaurantsRepository;
 import graduation.repository.UserRepository;
-import graduation.repository.UserVotesRepository;
 import graduation.repository.dao.UserVoteDao;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class UserVoteService {
-    @Getter
     private final UserRepository userRepository;
-
-    @Getter
     private final UserVoteDao userVoteDao;
-
-    @Getter
     private final RestaurantsRepository restaurantsRepository;
 
     public UserVoteService(@Autowired UserRepository userRepository, @Autowired UserVoteDao votesRepository,

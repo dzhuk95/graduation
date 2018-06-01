@@ -1,6 +1,8 @@
 package graduation.model;
 
-public enum UserType {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum UserType implements GrantedAuthority {
     USER(0), ADMIN(1);
     private int id;
 
@@ -10,5 +12,10 @@ public enum UserType {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String getAuthority() {
+        return this.name();
     }
 }

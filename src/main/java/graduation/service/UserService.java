@@ -1,12 +1,15 @@
 package graduation.service;
 
+import graduation.model.AuthorizedUser;
 import graduation.model.UserType;
 import graduation.model.api.CreateUserReq;
 import graduation.model.orm.UserEntity;
 import graduation.repository.UserRepository;
+import graduation.repository.dao.UserDao;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,14 +20,12 @@ import org.springframework.util.Assert;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Getter
-    private final UserRepository userRepository;
+    private final UserDao userDao;
 
-    public UserService(@Autowired UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService(@Autowired UserDao userDao) {
+        this.userDao = userDao;
     }
 
-    @Transactional
     public ResponseEntity createUser(CreateUserReq createUserReq) {
         check(createUserReq);
         saveUser(createUserReq, UserType.USER);
@@ -33,10 +34,10 @@ public class UserService implements UserDetailsService {
 
     private void saveUser(CreateUserReq createUserReq, UserType userType) {
         UserEntity of = UserEntity.of(createUserReq, userType);
-        userRepository.save(of);
+        userDao.save(of);
     }
 
-    @Transactional
+
     public ResponseEntity createAdmin(CreateUserReq createUserReq) {
         check(createUserReq);
         saveUser(createUserReq, UserType.ADMIN);
@@ -53,8 +54,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    // TODO: 31.05.2018 implement logic
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        UserEntity user = userDao.loadUserByUsername(username);
+        if (user == null)
+            throw new IllegalArgumentException("User not found");
+        return new AuthorizedUser(user);
     }
 }
