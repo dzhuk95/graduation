@@ -7,11 +7,10 @@ import lombok.Setter;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
 @Setter
-public class CreateRestaurantReq extends UserBaseReq {
-    private String restaurantName;
-    private List<RestaurantMenuItem> menu;
+@NoArgsConstructor
+public class UpdateRestaurantMenuReq extends UserBaseReq {
 
+    private List<RestaurantMenuItem> menu;
 }

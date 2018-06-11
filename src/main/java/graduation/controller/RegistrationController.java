@@ -1,9 +1,8 @@
 package graduation.controller;
 
-import graduation.model.api.AuthRequest;
 import graduation.model.api.CreateUserReq;
-import graduation.repository.dao.UserDao;
 import graduation.service.UserService;
+import graduation.service.impl.UserServiceImpl;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,25 +14,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/registration", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class RegistrationController {
 
     @Getter
-    private final UserService userService;
+    private final UserService userServiceImpl;
 
-    public RegistrationController(@Autowired UserService userService) {
-        this.userService = userService;
+    public RegistrationController(@Autowired UserService userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
-    @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity registration(@RequestBody CreateUserReq createUserReq) {
-        return userService.createUser(createUserReq);
+        return userServiceImpl.createUser(createUserReq);
     }
 
 
     @PreAuthorize("hasRole(ADMIN)")
-    @PostMapping(value = "/registration/manager", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/manager", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity registrationManager(@RequestBody CreateUserReq createUserReq) {
-        return userService.createAdmin(createUserReq);
+        return userServiceImpl.createAdmin(createUserReq);
     }
 }

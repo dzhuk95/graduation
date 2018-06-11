@@ -7,7 +7,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserVoteReq {
+public class UserVoteReq extends UserBaseReq {
     private int restaurantId;
+
 
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DeleteRestaurantRequest extends UserBaseReq {
-    private int id;
+public class AuthReq {
+    private String username;
+    private String password;
 }

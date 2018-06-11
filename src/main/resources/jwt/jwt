@@ -1,0 +1,3 @@
+jwt.secret.key=trdcytvygbuhnjmkplnj
+jwt.expire.day=1
+jwt.refresh.expire.day=4
