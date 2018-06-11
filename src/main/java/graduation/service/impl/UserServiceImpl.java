@@ -20,10 +20,11 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
     }
 
+    // TODO: 11.06.2018 Implement logic
     public ResponseEntity auth(AuthReq authReq) {
         UserEntity authUser = userDao.findUserByUsernameAndPassword(authReq.getUsername(), authReq.getPassword());
         if (authUser == null) throw new IllegalArgumentException("User doesn't exist");
-        
+        return null;
     }
 
     public ResponseEntity createUser(CreateUserReq createUserReq) {
