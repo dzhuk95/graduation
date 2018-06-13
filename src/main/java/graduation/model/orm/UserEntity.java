@@ -2,10 +2,7 @@ package graduation.model.orm;
 
 import graduation.model.UserType;
 import graduation.model.api.CreateUserReq;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,5 +37,12 @@ public class UserEntity extends AbstractBaseEntity {
 
     public static UserEntity of(CreateUserReq createUserReq, UserType userType) {
         return new UserEntity(createUserReq.getName(), createUserReq.getEmail(), createUserReq.getUsername(), createUserReq.getPassword(), userType);
+    }
+
+    public static UserEntity of(Integer id, UserType userType) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(id);
+        userEntity.setUserType(userType);
+        return userEntity;
     }
 }

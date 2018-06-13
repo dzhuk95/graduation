@@ -21,6 +21,10 @@ public abstract class AbstractBaseEntity implements Persistable<Integer> {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -18,7 +18,7 @@ public class AuthController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity auth(@RequestBody AuthReq authReq){
-
+    public ResponseEntity auth(@RequestBody AuthReq authReq) {
+        return userService.auth(authReq);
     }
 }

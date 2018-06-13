@@ -1,6 +1,5 @@
 package graduation.config;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;

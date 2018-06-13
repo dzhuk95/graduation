@@ -9,7 +9,7 @@ public interface TokenService {
 
     AuthResp createToken(UserEntity entity);
 
-    String createTokenFromRefreshToken(String refresh);
+    AuthResp createTokenFromRefreshToken(String refresh);
 
     default Claims getClaims(String token, String key) {
         return Jwts.parser().setSigningKey(key)

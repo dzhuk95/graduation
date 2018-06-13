@@ -1,5 +1,6 @@
 package graduation.service.impl;
 
+import graduation.model.InvalidRefreshTokenException;
 import graduation.model.UserType;
 import graduation.model.WrongTokenException;
 import graduation.model.api.AuthResp;
@@ -48,9 +49,8 @@ public class TokenServiceImpl implements TokenService {
         return AuthResp.of(token, refreshToken);
     }
 
-    private Map<String, Object> createMap(Integer userId, String uuid, UserType userType) {
+    private Map<String, Object> createMap(Integer userId, UserType userType) {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", uuid);
         map.put("userId", userId);
         map.put("type", userType);
         return map;
@@ -58,7 +58,8 @@ public class TokenServiceImpl implements TokenService {
 
     private String createToken(UserEntity userEntity, String uuid, LocalDate date, Long expireDays) {
         return Jwts.builder()
-                .setClaims(createMap(userEntity.getId(), uuid, userEntity.getUserType()))
+                .setId(uuid)
+                .setClaims(createMap(userEntity.getId(), userEntity.getUserType()))
                 .setIssuedAt(new Date(date.format(DateTimeFormatter.ISO_DATE)))
                 .setExpiration(new Date(date.plusDays(expireDays).format(DateTimeFormatter.ISO_DATE)))
                 .signWith(SignatureAlgorithm.HS256, key)
@@ -66,7 +67,16 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public String createTokenFromRefreshToken(String refresh) {
+    public AuthResp createTokenFromRefreshToken(String refresh) {
+        Claims tokenBody = getTokenBody(refresh);
+        String id = tokenBody.getId();
+        TokenEntity entity = tokenDao.getByTokenId(id);
+        if (entity == null) throw new InvalidRefreshTokenException("Invalid refresh token");
+        if (entity.getExpireTime().isAfter(LocalDateTime.now()))
+            throw new InvalidRefreshTokenException("Invalid refresh token");
+        Integer userId = tokenBody.get("userId", Integer.class);
+        UserType type = tokenBody.get("type", UserType.class);
+
         return null;
     }
 
@@ -85,5 +95,9 @@ public class TokenServiceImpl implements TokenService {
         } catch (IllegalArgumentException e) {
             throw new WrongTokenException("JWT token compact of handler are invalid");
         }
+    }
+
+    private Claims getTokenBody(String token) {
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     }
 }
